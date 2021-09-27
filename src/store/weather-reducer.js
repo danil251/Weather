@@ -1,21 +1,68 @@
-import {cardsAPI} from "../api/api";
+import {weatherAPI} from "../api/api";
 
-const initialState = []
+const initialState = {
+    weather: {
+        name: '',
+        wind: {
+            speed: '',
+            deg: ''
+        },
+        weather: [{
+            description: '',
+            main: '',
+            icon: ''
+        }],
+        main: {
+            temp: '',
+            pressure: '',
+            humidity: ''
+        },
+        clouds: {
+            all: ''
+        }
+    },
+    cities: [],
+    error: ''
+}
 
-export const cardsReducer = (state = initialState, action) => {
+export const weatherReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'SET-CARDS': {
-            return action.cards
+        case 'SET-WEATHER': {
+            return {...state, weather: action.weather}
+        }
+        case 'SET-CITIES': {
+            return {...state, cities: action.cities}
+        }
+        case 'SET-ERROR': {
+            return {...state, error: action.error}
         }
         default:
-            return [...state]
+            return {...state}
     }
 }
 
-export const setCards = (cards) => ({type: 'SET-CARDS', cards})
+export const setWeather = (weather) => ({type: 'SET-WEATHER', weather})
+export const setCities = (cities) => ({type: 'SET-CITIES', cities})
+export const setError = (error) => ({type: 'SET-ERROR', error})
 
-export const fetchCards = () => (dispatch) => {
-    cardsAPI.getCards().then(res => {
-        dispatch(setCards(res.data))
+export const fetchWeather = (city) => (dispatch) => {
+    weatherAPI.getWeather(city).then((res) => {
+        dispatch(setError(''))
+        dispatch(setWeather(res.data))
+    }).catch(() => {
+        dispatch(setError('Город не найден'))
+    })
+}
+export const fetchWeatherByCoordinates = (lat, lon) => (dispatch) => {
+    weatherAPI.getWeatherByCoordinates(lat, lon).then((res) => {
+        dispatch(setError(''))
+        dispatch(setWeather(res.data))
+    }).catch(() => {
+        dispatch(setError('Город не найден'))
+    })
+}
+export const fetchCities = () => (dispatch) => {
+    weatherAPI.getCities().then((res) => {
+        dispatch(setCities(res.data))
     })
 }

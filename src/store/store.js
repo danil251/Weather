@@ -1,10 +1,10 @@
 import {applyMiddleware, combineReducers, createStore} from 'redux'
-import {cardsReducer} from "./cards-reducer";
+import {weatherReducer} from "./weather-reducer";
 import thunkMiddleware from 'redux-thunk'
 
 
 const rootReducer = combineReducers({
-    Cards: cardsReducer
+    weather: weatherReducer
 })
 
 export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
